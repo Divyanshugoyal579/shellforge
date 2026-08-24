@@ -1,46 +1,57 @@
 #include <stdio.h>
 #include <string.h>
-#include "../include/lexer.h"
 
-int main() {
-    char input[256];
+#include "lexer.h"
+#include "token.h"
+#include "parser.h"
 
-    printf("================================\n");
-    printf("           ShellForge\n");
-    printf("    A Unix Style Shell written in C\n");
-    printf("================================\n");
+int main()
+{
+    char input[1024];
+    Token tokens[128] = {0};
+    Command cmd = {0};
 
-    while (1) {
+    printf("==============================\n");
+    printf("          ShellForge\n");
+    printf("   A Unix Style Shell written in C\n");
+    printf("==============================\n");
+
+    while (1)
+    {
         printf("shellforge$ ");
 
         if (!fgets(input, sizeof(input), stdin))
             break;
 
-        input[strcspn(input, "\n")] = '\0';
+        input[strcspn(input, "\n")] = 0;
 
-        if (strcmp(input, "exit") == 0) {
-            printf("Exiting...\n");
+        if (strcmp(input, "exit") == 0)
             break;
-        }
 
         if (strlen(input) == 0)
             continue;
 
-        int count;
-        Token **tokens = tokenize(input, &count);
+        lexer(input, tokens);
 
-        printf("\n------------ TOKENS ------------\n");
+        printf("\n------------- TOKENS -------------\n");
 
-        for (int i = 0; i < count; i++) {
-            if (tokens[i]->type == WORD)
-                printf("%d : WORD\t%s\n", i, tokens[i]->value);
-            else
-                printf("%d : END\t%s\n", i, tokens[i]->value);
+        int i = 0;
+
+        while (i < 128 && tokens[i].type != END)
+        {
+            printf("%d : WORD\t%s\n", i, tokens[i].value);
+            i++;
         }
 
-        printf("--------------------------------\n");
+        printf("%d : END\t\tEND\n", i);
 
-        free_tokens(tokens, count);
+        printf("----------------------------------\n");
+
+        memset(&cmd, 0, sizeof(cmd));
+
+        parse(tokens, &cmd);
+
+        print_pipeline(&cmd);
     }
 
     return 0;

@@ -1,34 +1,33 @@
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../include/lexer.h"
+#include "lexer.h"
 
-Token **tokenize(char *input, int *count) {
-    Token **tokens = NULL;
-    int size = 0;
+void lexer(char *input, Token tokens[])
+{
+    int i = 0;
 
     char *word = strtok(input, " \t\n");
 
-    while (word != NULL) {
-        tokens = realloc(tokens, sizeof(Token *) * (size + 1));
+    while (word != NULL && i < 127)
+    {
+        tokens[i].type = WORD;
 
-        tokens[size] = create_token(WORD, word);
-        size++;
+        tokens[i].value = malloc(strlen(word) + 1);
+
+        if (tokens[i].value == NULL)
+        {
+            printf("Memory allocation error\n");
+            exit(1);
+        }
+
+        strcpy(tokens[i].value, word);
+
+        i++;
 
         word = strtok(NULL, " \t\n");
     }
 
-    tokens = realloc(tokens, sizeof(Token *) * (size + 1));
-    tokens[size] = create_token(END, "END");
-    size++;
-
-    *count = size;
-    return tokens;
-}
-
-void free_tokens(Token **tokens, int count) {
-    for (int i = 0; i < count; i++) {
-        free_token(tokens[i]);
-    }
-
-    free(tokens);
+    tokens[i].type = END;
+    tokens[i].value = NULL;
 }
