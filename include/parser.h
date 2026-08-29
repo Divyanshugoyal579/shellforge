@@ -3,16 +3,29 @@
 
 #include "token.h"
 
+#define MAX_COMMANDS 20
+#define MAX_ARGS 100
+
 typedef struct {
-    char *argv[64];
+    char *argv[MAX_ARGS];
     int argc;
-    char *input;
-    char *output;
+
+    char *input_file;
+    char *output_file;
+
     int append;
     int background;
 } Command;
 
-void parse(Token *tokens, Command *cmd);
-void print_pipeline(Command *cmd);
+typedef struct {
+    Command commands[MAX_COMMANDS];
+    int count;
+} Pipeline;
+
+int parse_tokens(Token *tokens, int count, Pipeline *pipeline);
+
+void free_pipeline(Pipeline *pipeline);
+
+void print_pipeline(const Pipeline *pipeline);
 
 #endif

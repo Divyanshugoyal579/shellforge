@@ -1,7 +1,8 @@
 #ifndef EXPAND_H
 #define EXPAND_H
 
-void expand_command(void);
+#include "parser.h"
+
+int expand_pipeline(Pipeline *pipeline);
 
 #endif
-

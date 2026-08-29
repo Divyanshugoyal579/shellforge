@@ -3,6 +3,8 @@
 
 #include "token.h"
 
-void lexer(char *input, Token tokens[]);
+Token *tokenize(const char *input, int *count);
+
+void free_tokens(Token *tokens, int count);
 
 #endif

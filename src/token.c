@@ -1,27 +1,31 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include "../include/token.h"
+#include "token.h"
 
-Token *create_token(TokenType type, char *value) {
-    Token *token = malloc(sizeof(Token));
+const char *token_type_name(TokenType type)
+{
+    switch (type)
+    {
+        case TOKEN_WORD:
+            return "WORD";
 
-    token->type = type;
+        case TOKEN_PIPE:
+            return "PIPE";
 
-    if (value) {
-        token->value = malloc(strlen(value) + 1);
-        strcpy(token->value, value);
-    } else {
-        token->value = NULL;
+        case TOKEN_REDIRECT_IN:
+            return "REDIRECT_IN";
+
+        case TOKEN_REDIRECT_OUT:
+            return "REDIRECT_OUT";
+
+        case TOKEN_APPEND:
+            return "APPEND";
+
+        case TOKEN_BACKGROUND:
+            return "BACKGROUND";
+
+        case TOKEN_END:
+            return "END";
+
+        default:
+            return "UNKNOWN";
     }
-
-    return token;
-}
-
-void free_token(Token *token) {
-    if (!token)
-        return;
-
-    free(token->value);
-    free(token);
 }
